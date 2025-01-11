@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\CreditCardController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MoneyReserveController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -69,6 +70,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('money-reserves', MoneyReserveController::class);
 
     Route::resource('users', UserController::class);
+
+    Route::resource('dashboard', DashboardController::class)->only(['index']);
 });
 
 Route::middleware('guest')->group(function () {

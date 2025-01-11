@@ -51,7 +51,7 @@
 
                     <li>
                         <a class="flex items-center gap-x-3 py-2 px-2.5 {{ Route::is('dashboard') ? 'bg-gray-100' : 'bg-white' }} text-sm text-gray-700 rounded-lg hover:bg-gray-100 dark:bg-neutral-700 dark:text-white"
-                            href="#">
+                            href="{{ route('dashboard.index') }}">
                             <svg class="size-5 text-gray-800 dark:text-white" aria-hidden="true"
                                 xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
                                 viewBox="0 0 24 24">
