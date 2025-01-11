@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('invoices', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('credit_card_id')->constrained()->onDelete('cascade');
             $table->double('amount')->default(0);
             $table->date('due_date');
             $table->boolean('paid')->default(false);

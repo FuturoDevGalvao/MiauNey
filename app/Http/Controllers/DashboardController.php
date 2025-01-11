@@ -2,18 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreMoneyReservesTransationRequest;
-use App\Http\Requests\UpdateMoneyReservesTransationRequest;
-use App\Models\MoneyReservesTransation;
+use Illuminate\Http\Request;
 
-class MoneyReservesTransationController extends Controller
+class DashboardController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        return view('dashboard.index', ['title' => 'Dashboard']);
     }
 
     /**
@@ -27,7 +25,7 @@ class MoneyReservesTransationController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreMoneyReservesTransationRequest $request)
+    public function store(Request $request)
     {
         //
     }
@@ -35,7 +33,7 @@ class MoneyReservesTransationController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(MoneyReservesTransation $moneyReservesTransation)
+    public function show(string $id)
     {
         //
     }
@@ -43,7 +41,7 @@ class MoneyReservesTransationController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(MoneyReservesTransation $moneyReservesTransation)
+    public function edit(string $id)
     {
         //
     }
@@ -51,7 +49,7 @@ class MoneyReservesTransationController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateMoneyReservesTransationRequest $request, MoneyReservesTransation $moneyReservesTransation)
+    public function update(Request $request, string $id)
     {
         //
     }
@@ -59,7 +57,7 @@ class MoneyReservesTransationController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(MoneyReservesTransation $moneyReservesTransation)
+    public function destroy(string $id)
     {
         //
     }

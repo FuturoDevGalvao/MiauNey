@@ -9,4 +9,12 @@ class MoneyReserve extends Model
 {
     /** @use HasFactory<\Database\Factories\MoneyReserveFactory> */
     use HasFactory;
+
+    protected $fillable = [
+        'name',
+        'description',
+        'balance',
+        'image_path',
+        'user_id'
+    ];
 }

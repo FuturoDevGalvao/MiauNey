@@ -21,14 +21,23 @@ class CreditCardController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create() {}
+    public function create()
+    {
+
+        return view('credit-card.create', [
+            'title' => 'Novo cartão de crédito',
+            'authenticated' => session()->get('authenticated'),
+            'errorOccurred' => session()->get('errorOccurred')
+        ]);
+    }
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(StoreCreditCardRequest $request)
     {
-        //        
+        dd($request);
+
         // Validar o campo `validity` no formato MM/YYYY
         $validated = $request->validate([
             'validity' => ['required', 'regex:/^(0[1-9]|1[0-2])\/\d{4}$/']

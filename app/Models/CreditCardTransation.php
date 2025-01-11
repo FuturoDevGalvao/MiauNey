@@ -5,8 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class MoneyReservesTransation extends Model
+class CreditCardTransation extends Model
 {
-    /** @use HasFactory<\Database\Factories\MoneyReservesTransationFactory> */
+    /** @use HasFactory<\Database\Factories\CreditCardTransationFactory> */
     use HasFactory;
 }
