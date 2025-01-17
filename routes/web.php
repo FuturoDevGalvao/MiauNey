@@ -5,7 +5,10 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\CreditCardController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MoneyReserveController;
+use App\Http\Controllers\MoneyReservesTransactionController;
 use App\Http\Controllers\UserController;
+use App\Models\MoneyReserve;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Pest\Arch\Support\UserDefinedFunctions;
 
@@ -60,14 +63,24 @@ created_at, updated_at
 
 Route::middleware('auth')->group(function () {
     Route::get('/', function () {
-        return view('welcome', ['title' => 'Seja Bem-vindo!']);
+        return view('welcome', [
+            'title' => 'Seja Bem-vindo!',
+            'moneyReserves' => $reserves = MoneyReserve::where('user_id', Auth::user()->id)
+                ->orderBy('created_at', 'desc') // Ordena pela data de criação (mais recentes primeiro)
+                ->take(5)
+                ->get()
+        ]);
     })->name('root');
 
     Route::get('/login/logout', [LoginController::class, 'logout'])->name('login.logout');
 
     Route::resource('credit-cards', CreditCardController::class);
 
-    Route::resource('money-reserves', MoneyReserveController::class);
+    Route::resource('money-reserves', MoneyReserveController::class)
+        ->parameters(['money-reserves' => 'money_reserve']);
+
+    Route::resource('money-reserves-transactions', MoneyReservesTransactionController::class)
+        ->parameters(['money-reserves-transactions' => 'money-reserve-transaction']);
 
     Route::resource('users', UserController::class);
 

@@ -24,6 +24,8 @@ class User extends Authenticatable
         'email',
         'phone',
         'password',
+        'profile_image_path',
+        'banner_image_path'
     ];
 
     /**
@@ -47,5 +49,16 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+
+    public function moneyReserves()
+    {
+        return $this->hasMany(MoneyReserve::class);
+    }
+
+    public function creditCards()
+    {
+        return $this->hasMany(CreditCard::class);
     }
 }

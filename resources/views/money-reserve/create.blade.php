@@ -64,11 +64,11 @@
             ],
             [
                 'type' => 'text',
-                'name' => 'balance',
-                'id' => 'balance',
-                'required' => false,
-                'label' => 'Saldo inicial',
-                'placeholder' => 'Informe o saldo inicial da nova reserva',
+                'name' => 'goal',
+                'id' => 'goal',
+                'required' => true,
+                'label' => 'Meta da reserva',
+                'placeholder' => 'Informe a meta de dinheiro da nova reserva',
             ],
             [
                 'type' => 'file',

@@ -16,7 +16,7 @@
                 </div>
                 <div class="ms-2">
                     <h3 id="hs-dismiss-button-label" class="text-sm font-medium">
-                        Novo cartão de crédito criado com sucesso!
+                        As informações da reserva foram devidamente atualizadas!
                     </h3>
                 </div>
                 <div class="ps-3 ms-auto">
@@ -41,8 +41,10 @@
     @php
         $routes = [
             ['name' => 'Home', 'uri' => route('root')],
-            ['name' => 'Cartões', 'uri' => '#'],
-            ['name' => 'Nova cartão de crédito', 'uri' => route('credit-cards.create')],
+            ['name' => 'Reservas', 'uri' => '#'],
+            ['name' => 'Minhas reservas', 'uri' => route('money-reserves.index')],
+            ['name' => 'Reserva', 'uri' => '#'],
+            ['name' => 'Editar reserva', 'uri' => route('money-reserves.edit', ['money_reserve' => $moneyReserve->id])],
         ];
 
         $fields = [
@@ -50,54 +52,43 @@
                 'type' => 'text',
                 'name' => 'name',
                 'id' => 'name',
+                'required' => true,
+                'value' => $moneyReserve->name,
                 'label' => 'Nome',
+                'placeholder' => 'Informe o nome da nova reserva',
+            ],
+            [
+                'type' => 'textarea',
+                'name' => 'description',
+                'id' => 'description',
                 'required' => true,
-                'placeholder' => 'Dê um nome para o seu novo cartão',
+                'value' => $moneyReserve->description,
+                'label' => 'Descrição',
+                'placeholder' => 'Informe uma descrição para a sua nova reserva',
             ],
             [
                 'type' => 'text',
-                'name' => 'institution',
-                'id' => 'institution',
-                'label' => 'Banco / Instituição',
+                'name' => 'goal',
+                'id' => 'goal',
                 'required' => true,
-                'placeholder' => 'Informe o Banco / Instituição do cartão',
+                'value' => $moneyReserve->goal,
+                'label' => 'Meta da reserva',
+                'placeholder' => 'Informe a meta de dinheiro da nova reserva',
             ],
             [
-                'type' => 'text',
-                'name' => 'limit',
-                'id' => 'limit',
-                'label' => 'Limite',
-                'required' => true,
-                'placeholder' => 'Informe o limite do seu novo cartão',
-            ],
-            [
-                'type' => 'date',
-                'name' => 'validity',
-                'id' => 'validity',
-                'label' => 'Data de validade',
-                'required' => true,
-                'placeholder' => 'MM/YY',
-            ],
-            [
-                'type' => 'date',
-                'name' => 'due_date',
-                'id' => 'due_date',
-                'label' => 'Data de fechamento da fatura',
-                'required' => true,
-                'placeholder' => 'DD/MM',
-            ],
-            [
-                'type' => 'color',
-                'name' => 'color',
-                'id' => 'color',
-                'required' => true,
-                'label' => 'Selecione uma cor para o seu novo cartão',
-                'placeholder' => '',
+                'type' => 'file',
+                'name' => 'image',
+                'id' => 'image',
+                'required' => false,
+                'value' => '',
+                'label' => 'Selecione uma imagem para ser a cara da sua nova reserva',
+                'placeholder' => 'selecione um arquivo',
             ],
         ];
     @endphp
 
-    <x-header :resource="'Novo cartão de crédito'" :routesForBreadcrumb="$routes" :imagePath="'https://i.pinimg.com/originals/99/ea/36/99ea3646f45f3e0c86bc8d11b9bdcfb9.gif'"></x-header>
+    <x-header :resource="'Editar reserva'" :routesForBreadcrumb="$routes" :imagePath="'https://i.pinimg.com/originals/99/ea/36/99ea3646f45f3e0c86bc8d11b9bdcfb9.gif'">
+    </x-header>
 
-    <x-form-create-resource :route="route('credit-cards.store')" :method="'POST'" :fields="$fields"></x-form-create-resource>
+    <x-form-create-resource :route="route('money-reserves.update', ['money_reserve' => $moneyReserve->id])" :method="'PATCH'" :fields="$fields"></x-form-create-resource>
 @endsection

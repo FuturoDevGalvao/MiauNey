@@ -6,10 +6,16 @@ import "preline";
 import InputMask from "inputmask";
 
 document.addEventListener("DOMContentLoaded", () => {
-    const valityCardMask = new InputMask("99/99");
-    const valityCardInput = document.getElementById("validity");
+    const cardValidityMask = new InputMask("99/99");
+    const dueDateMask = new InputMask("99/99");
+    const cardValidityField = document.getElementById("validity");
+    const dueDateField = document.getElementById("due_date");
 
-    if (valityCardInput) {
-        valityCardMask.mask(valityCardInput);
+    if (cardValidityField) {
+        cardValidityMask.mask(cardValidityField);
+    }
+
+    if (dueDateField) {
+        dueDateMask.mask(dueDateField);
     }
 });

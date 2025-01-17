@@ -13,8 +13,18 @@ class MoneyReserve extends Model
     protected $fillable = [
         'name',
         'description',
-        'balance',
+        'goal',
         'image_path',
         'user_id'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function moneyReservesTransactions()
+    {
+        return $this->hasMany(MoneyReservesTransaction::class);
+    }
 }

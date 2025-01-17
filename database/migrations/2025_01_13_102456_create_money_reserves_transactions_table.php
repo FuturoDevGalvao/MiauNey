@@ -11,18 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('credit_cards', function (Blueprint $table) {
+        Schema::create('money_reserves_transactions', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('institution');
-            $table->string('validity', 5);
-            $table->string('limit');
-            $table->string('color');
-            $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')
+            $table->string('title');
+            $table->text('description')->nullable();
+            $table->double('value');
+            $table->enum('operation', ['input', 'output']);
+
+            $table->unsignedBigInteger('money_reserve_id');
+            $table->foreign('money_reserve_id')
                 ->references('id')
-                ->on('users')
+                ->on('money_reserves')
                 ->onDelete('cascade');
+
             $table->timestamps();
         });
     }
@@ -32,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('credit_cards');
+        Schema::dropIfExists('money_reserves_transactions');
     }
 };

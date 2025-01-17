@@ -24,7 +24,7 @@ class StoreMoneyReserveRequest extends FormRequest
         return [
             'name' => 'required|string|min:3|max:30',
             'description' => 'required|string|min:10',
-            'balance' => 'required',
+            'goal' => 'required',
             'image' => 'nullable|image|mimes:jpg,png,jpeg,gif|max:2048',
         ];
     }
@@ -37,7 +37,7 @@ class StoreMoneyReserveRequest extends FormRequest
             'name.max' => 'O nome da nova reserva pode ter, no máximo, 60 caracteres.',
             'description.required' => 'A descrição para a nova reserva é obrigatória.',
             'description.min' => 'A descrição para a nova reserva deve ter, no mínimo, 10 caracteres.',
-            'balance.required' => 'O saldo inicial é obrigatório.',
+            'goal.required' => 'A meta é obrigatória é obrigatório.',
             'image.image' => 'O arquivo deve ser uma imagem.',
             'image.mimes' => 'A imagem deve ser do tipo: jpg, png, jpeg ou gif.',
             'image.max' => 'A imagem não deve ter mais de 2048 kilobytes.',

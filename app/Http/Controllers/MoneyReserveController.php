@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ImageHelper;
+use App\Helpers\RouteHelper;
 use App\Http\Requests\StoreMoneyReserveRequest;
 use App\Http\Requests\UpdateMoneyReserveRequest;
 use App\Models\MoneyReserve;
+use App\Models\MoneyReservesTransaction;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
@@ -17,7 +19,12 @@ class MoneyReserveController extends Controller
     public function index()
     {
 
-        return view('money-reserve.index', ['title' => 'Minhas reservas de dinheiro', 'allMoneyReserves' => MoneyReserve::paginate(3)]);
+        return view('money-reserve.index', [
+            'title' => 'Minhas reservas de dinheiro',
+            'allMoneyReserves' => MoneyReserve::where('user_id', Auth::user()->id)->paginate(3),
+            'successOnDelete' => session()->get('successOnDelete'),
+            'nameOfReserveDeleted' => session()->get('nameOfReserveDeleted')
+        ]);
     }
 
     /**
@@ -27,7 +34,7 @@ class MoneyReserveController extends Controller
     {
         return view('money-reserve.create', [
             'title' => 'Nova reserva de dinheiro',
-            'successOnCreate' => session()->get('successOnCreate')
+            'successOnCreate' => session()->get('successOnCreate'),
         ]);
     }
 
@@ -41,7 +48,7 @@ class MoneyReserveController extends Controller
         $validatedData['user_id'] = Auth::user()->id;
 
         if (isset($validatedData['image'])) {
-            $imagePath = ImageHelper::saveImage($request->file('image'));
+            $imagePath = ImageHelper::saveImage($validatedData['image']);
             $validatedData['image_path'] = $imagePath;
         }
 
@@ -59,7 +66,17 @@ class MoneyReserveController extends Controller
      */
     public function show(MoneyReserve $moneyReserve)
     {
-        return view('money-reserve.show', ['title' => 'Minhas reservas', 'moneyReserve' => $moneyReserve]);
+        $user = $moneyReserve->user; // Usuário autenticado
+
+        $allMoneyReservesTransactions = MoneyReservesTransaction::whereHas('moneyReserve', function ($query) use ($user) {
+            $query->where('user_id', $user->id);
+        })->orderBy('created_at', 'desc')->get();
+
+        return view('money-reserve.show', [
+            'title' => 'Reserva' . $moneyReserve->name,
+            'moneyReserve' => $moneyReserve,
+            'allMoneyReservesTransactions' => $allMoneyReservesTransactions
+        ]);
     }
 
     /**
@@ -67,43 +84,36 @@ class MoneyReserveController extends Controller
      */
     public function edit(MoneyReserve $moneyReserve)
     {
-        //
+        return view('money-reserve.edit', [
+            'title' => 'Editar reserva de dinheiro',
+            'moneyReserve' => $moneyReserve,
+            'successOnCreate' => session()->get('successOnCreate')
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update($request, $id)
+    public function update(UpdateMoneyReserveRequest $request, MoneyReserve $moneyReserve)
     {
-        // Valida os dados recebidos
         $validatedData = $request->validated();
+        $sessionData = ['successOnUpdate' => false];
+        /* rever para usar o relacionamento */
+        $validatedData['user_id'] = $moneyReserve->user->id;
 
-        // Recupera o usuário pelo ID
-        $user = User::findOrFail($id);
-        $user->update($validatedData);
+        try {
 
-        /* Lógica de armazenamento de fotos de usuário */
-        if (isset($validatedData['profileImage'])) {
-            $pathNewImage = ImageHelper::saveImage($validatedData['profileImage']);
-
-            try {
-                if ($user->profileImage) {
-                    ImageHelper::deleteImage($user->profileImage->path);
-                    $user->profileImage->path = $pathNewImage;
-                    $user->profileImage->save();
-                } else {
-                }
-            } catch (\Throwable $th) {
-                return redirect()->back()->with([
-                    'errorOnUpdate' => true
-                ]);
+            if (isset($validatedData['image'])) {
+                $imagePath = ImageHelper::saveImage($request->file('image'));
+                $validatedData['image_path'] = $imagePath;
             }
+
+            $sessionData['successOnCreate'] = $moneyReserve->update($validatedData);;
+        } catch (\Throwable $th) {
+            return back()->with($sessionData);
         }
 
-        // Redireciona ou retorna uma resposta de sucesso
-        return redirect()->back()->with([
-            'successOnUpdate' => true
-        ]);
+        return back()->with($sessionData);
     }
 
     /**
@@ -111,6 +121,18 @@ class MoneyReserveController extends Controller
      */
     public function destroy(MoneyReserve $moneyReserve)
     {
-        //
+        $sessionData = ['successOnDelete' => false, 'nameOfReserveDeleted' => ''];
+
+        try {
+            $sessionData['nameOfReserveDeleted'] = $moneyReserve->name;
+            if (isset($moneyReserve->image_path)) {
+                ImageHelper::deleteImage('');
+            }
+            $sessionData['successOnDelete'] = $moneyReserve->delete();
+        } catch (\Throwable $th) {
+            return redirect()->route('money-reserves.index')->with($sessionData);
+        }
+
+        return redirect()->route('money-reserves.index')->with($sessionData);
     }
 }

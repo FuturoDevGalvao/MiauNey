@@ -17,7 +17,12 @@ class CreditCardFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'name' => $this->faker->creditCardType(),
+            'institution' => $this->faker->company(),
+            'validity' => $this->faker->regexify('[0-1][0-9]/[0-9]{2}'), // Ex: 12/25
+            'limit' => $this->faker->numberBetween(1000, 5000),
+            'color' => $this->faker->hexColor(),
+            'user_id' => null, // Relaciona automaticamente a um usuário
         ];
     }
 }

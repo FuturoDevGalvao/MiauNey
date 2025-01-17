@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('invoices', function (Blueprint $table) {
             $table->id();
-            $table->double('amount')->default(0);
-            $table->date('due_date');
+            $table->double('value')->default(0); // Valor atual da fatura (compras realizadas)
+            $table->double('limit'); // Valor fixo do teto da fatura
+            $table->string('due_date', 5);
             $table->boolean('paid')->default(false);
 
             /* relacionamento com a tabela credit_cards */

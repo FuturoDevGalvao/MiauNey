@@ -15,7 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->text('description');
-            $table->double('balance');
+            $table->double('goal');
+            $table->double('amount_achieved')->default(0);
+            $table->boolean('goal_achieved')->default(false);
 
             /* Campo para imagem */
             $table->string('image_path')->nullable(); // Caminho da imagem, pode ser nulo inicialmente.

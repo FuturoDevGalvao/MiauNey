@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreCreditCardRequest;
 use App\Http\Requests\UpdateCreditCardRequest;
 use App\Models\CreditCard;
+use App\Models\Invoice;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class CreditCardController extends Controller
 {
@@ -14,7 +17,8 @@ class CreditCardController extends Controller
     public function index()
     {
         return view('credit-card.index', [
-            'title' => 'Meus cartões de crédito'
+            'title' => 'Meus cartões de crédito',
+            'allCreditCards' => CreditCard::where('user_id', Auth::user()->id)->paginate(6)
         ]);
     }
 
@@ -26,8 +30,7 @@ class CreditCardController extends Controller
 
         return view('credit-card.create', [
             'title' => 'Novo cartão de crédito',
-            'authenticated' => session()->get('authenticated'),
-            'errorOccurred' => session()->get('errorOccurred')
+            'successOnCreate' => session()->get('successOnCreate'),
         ]);
     }
 
@@ -36,26 +39,32 @@ class CreditCardController extends Controller
      */
     public function store(StoreCreditCardRequest $request)
     {
-        dd($request);
+        $newCreditCardData = $request->validated();
+        $sessionData = ['successOnCreate' => false];
+        $newCreditCardData['user_id'] = Auth::user()->id;
 
-        // Validar o campo `validity` no formato MM/YYYY
-        $validated = $request->validate([
-            'validity' => ['required', 'regex:/^(0[1-9]|1[0-2])\/\d{4}$/']
-        ]);
+        DB::beginTransaction();
 
-        // Transformar para o formato "YYYY-MM-01"
-        [$month, $year] = explode('/', $validated['validity']);
-        $validityDate = "$year-$month-01";
+        try {
+            $creditCard = CreditCard::create($newCreditCardData);
 
-        // Salvar no banco
-        CreditCard::create([
-            'name' => 'Cartão Teste',
-            'institution' => 'Banco X',
-            'validity' => $validityDate,
-            'limit' => 5000
-        ]);
+            $newInvoiceData = [];
+            $newInvoiceData['limit'] = $creditCard->limit;
+            $newInvoiceData['credit_card_id'] = $creditCard->id;
+            $newInvoiceData['due_date'] = $newCreditCardData['due_date'];
 
-        return redirect()->back()->with('success', 'Cartão salvo com sucesso!');
+            $invoice = Invoice::create($newInvoiceData);
+
+            if ($creditCard and $invoice) {
+                DB::commit();
+                $sessionData['successOnCreate'] = true;
+            }
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return back()->with($sessionData);
+        }
+
+        return back()->with($sessionData);
     }
 
     /**
@@ -63,7 +72,10 @@ class CreditCardController extends Controller
      */
     public function show(CreditCard $creditCard)
     {
-        //
+        return view('credit-card.show', [
+            'title' => 'Cartão' . $creditCard->name,
+            'creditCard' => $creditCard
+        ]);
     }
 
     /**

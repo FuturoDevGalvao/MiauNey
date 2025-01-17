@@ -17,7 +17,13 @@ class MoneyReserveFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'name' => $this->faker->word(),
+            'description' => $this->faker->paragraph(),
+            'goal' => $this->faker->numberBetween(500, 5000),
+            'amount_achieved' => $this->faker->numberBetween(0, 5000),
+            'goal_achieved' => false,
+            'image_path' => null,
+            'user_id' => null, // Relaciona automaticamente a um usuário
         ];
     }
 }

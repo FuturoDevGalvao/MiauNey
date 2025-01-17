@@ -17,7 +17,8 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->string('phone');
-            $table->string('image_path')->nullable(); // Caminho da imagem, pode ser nulo inicialmente.
+            $table->string('profile_image_path')->nullable(); // Caminho da imagem, pode ser nulo inicialmente.
+            $table->string('banner_image_path')->nullable(); // Caminho da imagem, pode ser nulo inicialmente.
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();

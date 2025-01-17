@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\MoneyReservesTransation>
  */
+
 class MoneyReservesTransactionFactory extends Factory
 {
     /**
@@ -17,7 +18,11 @@ class MoneyReservesTransactionFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'title' => $this->faker->sentence(),
+            'description' => $this->faker->paragraph(),
+            'value' => $this->faker->randomFloat(2, 10, 500),
+            'operation' => $this->faker->randomElement(['input', 'output']),
+            'money_reserve_id' => null, // Relaciona automaticamente a uma reserva
         ];
     }
 }

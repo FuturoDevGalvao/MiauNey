@@ -11,7 +11,7 @@ class StoreMoneyReservesTransactionRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,8 +21,6 @@ class StoreMoneyReservesTransactionRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            'action' => 'required|in:entrada,saída',
-        ];
+        return [];
     }
 }
